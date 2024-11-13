@@ -1,0 +1,319 @@
+{
+  "name": "TweetAutomationJson",
+  "nodes": [
+    {
+      "parameters": {
+        "text": "=«{{ $json.nextTweet.Oracion }}»\n\n{{ $json.nextTweet.Autor }}",
+        "additionalFields": {}
+      },
+      "id": "acf8c5bb-90bb-4c09-90ee-b020a9ab3f4b",
+      "name": "X",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        420
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "n0276EcMiDjWnPh3",
+          "name": "X account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "id": "4fd591eb-69c3-4e19-acb5-9947ddd1ec07",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        780,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1i7YvKhdraGkthg1b356ltaA6jH8WY5Yy",
+          "mode": "list",
+          "cachedResultName": "FrasesSimple.json",
+          "cachedResultUrl": "https://drive.google.com/file/d/1i7YvKhdraGkthg1b356ltaA6jH8WY5Yy/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "id": "e07934c0-23ec-493d-8e0c-c60ab36adf1e",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        560,
+        380
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OahUmsdEJnq1kMn7",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Ensure the input JSON has the expected structure\nconst inputData = $input.item.json;\nif (!inputData.data || !Array.isArray(inputData.data)) {\n    throw new Error(\"Unexpected data structure. Expected an array with a 'data' key containing an array.\");\n}\n\n// Access the tweet data from inputData\nconst allTweets = inputData.data; // Array of tweets from the JSON file\n\n// Retrieve posted tweets from Google Sheets node output\nconst sheetData = $('Google Sheets').json;\n\n// Check if sheetData exists and contains data\nconst postedTweets = sheetData && Array.isArray(sheetData) && sheetData.length > 0\n    ? sheetData.map(row => row.columns['Sentence']) // Replace 'Sentence' with the actual column name\n    : [];\n\n// Filter tweets to find ones that haven't been posted\nconst unpostedTweets = allTweets.filter(tweet => !postedTweets.includes(tweet.Oracion));\n\nlet nextTweet = null;\nlet allPosted = false;\n\nif (unpostedTweets.length > 0) {\n    nextTweet = unpostedTweets[0]; // Select the first unposted tweet\n} else {\n    allPosted = true; // Indicate all tweets have been posted\n}\n\n// Return data with nextTweet and allPosted status\nreturn {\n    json: {\n        nextTweet: nextTweet || null,\n        allPosted: allPosted\n    }\n};"
+      },
+      "id": "421117f6-5f12-4497-a04a-861702c6157e",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9151ab25-f576-4274-93e2-c8ffa6862d4e",
+              "leftValue": "{{ $json.allPosted }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6827dfc3-316f-463b-82a6-2848fd7fcacf",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "a71c79e3-17c7-48fd-92bf-458e88eb57de",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        340,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1P-gquwZAZtzj990aMGC0i6l8qkgXoHWfQQRFUa5MkIo",
+          "mode": "list",
+          "cachedResultName": "SentTweetFollowup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1P-gquwZAZtzj990aMGC0i6l8qkgXoHWfQQRFUa5MkIo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "SentTweets",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1P-gquwZAZtzj990aMGC0i6l8qkgXoHWfQQRFUa5MkIo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "Body": "={{ $json.text }}",
+            "Sentence": "={{ $('If').item.json.nextTweet.Oracion }}",
+            "Author": "={{ $('If').item.json.nextTweet.Autor }}",
+            "Date": "={{ $('Schedule Trigger').item.json[\"Readable date\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentence",
+              "displayName": "Sentence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Author",
+              "displayName": "Author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Body",
+              "displayName": "Body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "11075cba-b6a2-4b19-b560-6f55e89cac71",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1660,
+        420
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "srIbjAHkgg0FiKb5",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1da7c5f5-9315-4957-b5fb-a801f3a245ec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a06734f6b700d0787bd66020a0522b91396a3f835b5f20c6fb7ef132a1a843ee"
+  },
+  "id": "VR70YJrXVPs9Sfbp",
+  "tags": [
+    {
+      "name": "X",
+      "id": "dSV5oMhfO5IiUxNg",
+      "createdAt": "2024-11-13T11:38:10.434Z",
+      "updatedAt": "2024-11-13T11:38:10.434Z"
+    },
+    {
+      "name": "Automation",
+      "id": "UvrPGkjPB0w5I0GY",
+      "createdAt": "2024-11-13T11:38:21.578Z",
+      "updatedAt": "2024-11-13T11:38:21.578Z"
+    }
+  ]
+}
