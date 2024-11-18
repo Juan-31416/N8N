@@ -1,0 +1,141 @@
+{
+  "active": false,
+  "connections": {
+    "Recup image": {
+      "main": [
+        [
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "At 17H image jokes": {
+      "main": [
+        [
+          {
+            "node": "Request blablagues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request blablagues": {
+      "main": [
+        [
+          {
+            "node": "Recup image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-13T08:56:08.451Z",
+  "id": "ClPnURS2lIX5m0uc",
+  "meta": {
+    "templateId": "1376",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Share jokes on Twitter automatically",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.blablagues.net/?rub=images",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "Request blablagues",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        630,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "230daf6c-2829-403e-98bc-edbc92acb0ce"
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Request blablagues\"].json[\"data\"][\"data\"][\"content\"][\"media\"]}}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "name": "Recup image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        880,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "8edbf30e-2fe0-464c-851e-efc31fdb6d08"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 17
+            }
+          ]
+        }
+      },
+      "name": "At 17H image jokes",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "28d422a7-2c1a-46de-b1c6-80b584e9687f"
+    },
+    {
+      "parameters": {
+        "text": "{{$node[\"Request blablagues\"].json[\"data\"][\"data\"][\"content\"][\"text\"]}}",
+        "additionalFields": {}
+      },
+      "id": "5d51ce98-ae19-47d3-8331-ff6d97e2ed7d",
+      "name": "X",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        240
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "n0276EcMiDjWnPh3",
+          "name": "X account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "N8N",
+  "repo_owner": "Juan-31416",
+  "repo_path": "Share jokes on Twitter automatically.json",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-11-13T11:38:10.434Z",
+      "updatedAt": "2024-11-13T11:38:10.434Z",
+      "id": "dSV5oMhfO5IiUxNg",
+      "name": "X"
+    },
+    {
+      "createdAt": "2024-11-13T11:38:21.578Z",
+      "updatedAt": "2024-11-13T11:38:21.578Z",
+      "id": "UvrPGkjPB0w5I0GY",
+      "name": "Automation"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2024-11-15T14:29:12.983Z",
+  "versionId": "38fe892f-56bf-4b4f-8dc4-2eaca0752164"
+}
