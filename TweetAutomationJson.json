@@ -1,4 +1,79 @@
 {
+  "active": true,
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-13T08:28:01.620Z",
+  "id": "VR70YJrXVPs9Sfbp",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "TweetAutomationJson",
   "nodes": [
     {
@@ -115,7 +190,8 @@
         "rule": {
           "interval": [
             {
-              "field": "hours"
+              "field": "hours",
+              "hoursInterval": 100
             }
           ]
         }
@@ -223,97 +299,32 @@
     }
   ],
   "pinData": {},
-  "connections": {
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Drive": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "X": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [],
-        [
-          {
-            "node": "X",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Google Drive",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
-  "active": false,
+  "repo_name": "N8N",
+  "repo_owner": "Juan-31416",
+  "repo_path": "TweetAutomationJson.json",
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1da7c5f5-9315-4957-b5fb-a801f3a245ec",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "a06734f6b700d0787bd66020a0522b91396a3f835b5f20c6fb7ef132a1a843ee"
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
   },
-  "id": "VR70YJrXVPs9Sfbp",
   "tags": [
     {
-      "name": "X",
-      "id": "dSV5oMhfO5IiUxNg",
       "createdAt": "2024-11-13T11:38:10.434Z",
-      "updatedAt": "2024-11-13T11:38:10.434Z"
+      "updatedAt": "2024-11-13T11:38:10.434Z",
+      "id": "dSV5oMhfO5IiUxNg",
+      "name": "X"
     },
     {
-      "name": "Automation",
-      "id": "UvrPGkjPB0w5I0GY",
       "createdAt": "2024-11-13T11:38:21.578Z",
-      "updatedAt": "2024-11-13T11:38:21.578Z"
+      "updatedAt": "2024-11-13T11:38:21.578Z",
+      "id": "UvrPGkjPB0w5I0GY",
+      "name": "Automation"
     }
-  ]
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-11-15T15:25:17.905Z",
+  "versionId": "2f2c5775-89f9-4632-a5a6-2d238e929944"
 }
